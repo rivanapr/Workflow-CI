@@ -1,0 +1,42 @@
+name: MLflow CI - Train Model
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  train-model:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    
+    - name: Set up Conda
+      uses: conda-incubator/setup-miniconda@v2
+      with:
+        auto-update-conda: true
+        python-version: 3.12
+    
+    - name: Install MLflow
+      run: |
+        conda install -c conda-forge mlflow -y
+        
+    - name: Run MLflow Project
+      run: |
+        cd MLProject
+        mlflow run . --no-conda
+      env:
+        MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
+    
+    - name: Upload MLflow Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: mlflow-artifacts
+        path: |
+          MLProject/mlruns/
+          MLProject/*.pkl
+        retention-days: 30
