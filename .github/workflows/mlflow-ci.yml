@@ -19,13 +19,16 @@ jobs:
       uses: conda-incubator/setup-miniconda@v2
       with:
         auto-update-conda: true
-        python-version: 3.12
+        python-version: 3.9
+        activate-environment: mlflow-env
     
-    - name: Install MLflow
+    - name: Install MLflow and dependencies
+      shell: bash -l {0}
       run: |
-        conda install -c conda-forge mlflow -y
+        conda install -c conda-forge mlflow scikit-learn pandas numpy -y
         
     - name: Run MLflow Project
+      shell: bash -l {0}
       run: |
         cd MLProject
         mlflow run . --no-conda
