@@ -31,7 +31,7 @@ jobs:
       shell: bash -l {0}
       run: |
         cd MLProject
-        mlflow run . --no-conda
+        mlflow run . --env-manager=local
       env:
         MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
     
