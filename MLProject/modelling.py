@@ -1,5 +1,18 @@
 import mlflow
+import mlflow.sklearn
+from sklearn.datasets import load_iris
+from sklearn.ensemble import RandomForestClassifier
 
-with mlflow.start_run():
-    mlflow.log_param("model", "dummy")
-    mlflow.log_metric("accuracy", 0.8)
+def main():
+    X, y = load_iris(return_X_y=True)
+
+    with mlflow.start_run():
+        model = RandomForestClassifier(n_estimators=10)
+        model.fit(X, y)
+
+        mlflow.log_param("n_estimators", 10)
+        mlflow.log_metric("accuracy", model.score(X, y))
+        mlflow.sklearn.log_model(model, "model")
+
+if __name__ == "__main__":
+    main()
